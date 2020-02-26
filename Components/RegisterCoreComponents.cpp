@@ -56,6 +56,10 @@ you must include it here and follow the registration pattern in RegisterComponen
 #include "Geometry_Reflection.h"
 #include "Geometry_ReflectionFromTransform.h"
 #include "Geometry_PlaneTransform.h"
+#include "Geometry_ProjectOnto.h"
+#include "Geometry_FillWithShape.h"
+#include "Geometry_CubeTetLattice.h"
+#include "Geometry_ReadTET.h"
 #include "Sets_Series.h"
 #include "Sets_LogisticGrowthSeries.h"
 #include "Sets_ListItem.h"
@@ -65,7 +69,9 @@ you must include it here and follow the registration pattern in RegisterComponen
 #include "Sets_ShiftList.h"
 #include "Sets_LoopBegin.h"
 #include "Sets_LoopEnd.h"
-#include "Sets_DataRecorder.h"
+#include "Sets_Heap.h"
+#include "Sets_Freeze.h"
+#include "Sets_Pop.h"
 #include "Sets_NamedPair.h"
 #include "Sets_AddKeyValue.h"
 #include "Sets_GetValueByKey.h"
@@ -187,18 +193,22 @@ you must include it here and follow the registration pattern in RegisterComponen
 #include "Mesh_Sphere.h"
 #include "Mesh_Plane.h"
 #include "Mesh_Pipe.h"
+#include "Mesh_CubicLattice.h"
 #include "Mesh_FieldRemesh.h"
 #include "Mesh_SaveMesh.h"
 #include "Mesh_CleanMesh.h"
 #include "Mesh_BoundingBox.h"
 #include "Mesh_HarmonicDeformation.h"
 #include "Mesh_HausdorffDistance.h"
+#include "Mesh_Voxelize.h"
 #include "Mesh_ReadOBJ.h"
 #include "Mesh_ReadOFF.h"
 #include "Mesh_ReadPLY.h"
 #include "Mesh_WriteOBJ.h"
 #include "Mesh_WriteOFF.h"
 #include "Mesh_WritePLY.h"
+#include "Mesh_ReadSTL.h"
+#include "Mesh_SignedDistance.h"
 #include "Curve_ZigZagPolyline.h"
 #include "Curve_HelixSpiral.h"
 #include "Curve_Polyline.h"
@@ -216,6 +226,9 @@ you must include it here and follow the registration pattern in RegisterComponen
 #include "Curve_Length.h"
 #include "Curve_PolylineSweep.h"
 #include "Curve_PolylineRevolve.h"
+#include "Curve_SelfIntersections.h"
+#include "Curve_MakeKnot.h"
+#include "Curve_Pipe.h"
 //#include "Curve_ReadBagOfEdges.h"
 #include "Mesh_SubdivideMesh.h"
 #include "Input_SliderListener.h"
@@ -228,6 +241,7 @@ you must include it here and follow the registration pattern in RegisterComponen
 #include "Vector_ColorRGBA.h"
 #include "Vector_BestFitPlane.h"
 #include "Vector_ColorPalette.h"
+#include "Vector_Grid3D.h"
 #include "Scene_UpdateListener.h"
 #include "Mesh_Offset.h"
 #include "Mesh_Window.h"
@@ -242,6 +256,7 @@ you must include it here and follow the registration pattern in RegisterComponen
 #include "Mesh_TriMeshVolume.h"
 #include "Mesh_TriangulateNMesh.h"
 #include "Mesh_Tetrahedralize.h"
+#include "Mesh_TetLattice.h"
 #include "Mesh_MeshPlaneIntersection.h"
 #include "Mesh_AverageEdgeLength.h"
 #include "Mesh_UnifyNormals.h"
@@ -265,6 +280,7 @@ you must include it here and follow the registration pattern in RegisterComponen
 #include "Mesh_LinearDeformation.h"
 #include "Mesh_BoxMorph.h"
 #include "Mesh_Remesh.h"
+#include "Mesh_MarchingCubes.h"
 #include "Mesh_SlideTowards.h"
 #include "Curve_MeshSketch.h"
 #include "Spatial_ReadOSM.h"
@@ -292,6 +308,7 @@ you must include it here and follow the registration pattern in RegisterComponen
 #include "ShapeOp_GeometryStrain.h"
 #include "ShapeOp_MeshTriangleStrain.h"
 #include "ShapeOp_GenericConstraint.h"
+#include "ShapeOp_TetStrain.h"
 
 #include "ReflectionProbe.h"
 #include "ColorSlider.h"
@@ -348,6 +365,10 @@ void RegisterCoreComponents(Context* context)
 	RegisterIogramType<Geometry_Reflection>(context);
     RegisterIogramType<Geometry_ReflectionFromTransform>(context);
     RegisterIogramType<Geometry_PlaneTransform>(context);
+	RegisterIogramType<Geometry_ProjectOnto>(context);
+	RegisterIogramType<Geometry_FillWithShape>(context);
+	RegisterIogramType<Geometry_CubeTetLattice>(context);
+	RegisterIogramType<Geometry_ReadTET>(context);
 	//RegisterIogramType<Geometry_Transform>(context);
 	RegisterIogramType<Geometry_AffineTransformation>(context);
 	RegisterIogramType<Sets_Series>(context);
@@ -359,7 +380,9 @@ void RegisterCoreComponents(Context* context)
 	RegisterIogramType<Sets_ShiftList>(context);
 	RegisterIogramType<Sets_LoopBegin>(context);
 	RegisterIogramType<Sets_LoopEnd>(context);
-	RegisterIogramType<Sets_DataRecorder>(context);
+	RegisterIogramType<Sets_Heap>(context);
+	RegisterIogramType<Sets_Freeze>(context);
+	RegisterIogramType<Sets_Pop>(context);
 	RegisterIogramType<Sets_NamedPair>(context);
 	RegisterIogramType<Sets_AddKeyValue>(context);
 	RegisterIogramType<Sets_GetValueByKey>(context);
@@ -483,6 +506,7 @@ void RegisterCoreComponents(Context* context)
 	RegisterIogramType<Mesh_Plane>(context);
     RegisterIogramType<Mesh_Cylinder>(context);
 	RegisterIogramType<Mesh_Pipe>(context);
+	RegisterIogramType<Mesh_CubicLattice>(context);
 	RegisterIogramType<Mesh_SaveMesh>(context);
 	RegisterIogramType<Mesh_CleanMesh>(context);
 	RegisterIogramType<Mesh_BoundingBox>(context);
@@ -490,6 +514,7 @@ void RegisterCoreComponents(Context* context)
 	RegisterIogramType<Mesh_HarmonicDeformation>(context);
 	RegisterIogramType<Mesh_TriangulateNMesh>(context);
 	RegisterIogramType<Mesh_MeshModeler>(context);
+	RegisterIogramType<Mesh_SignedDistance>(context);
 	//	RegisterIogramType<Mesh_FieldRemesh>(context);
 	RegisterIogramType<Curve_ZigZagPolyline>(context);
     RegisterIogramType<Curve_HelixSpiral>(context);
@@ -504,11 +529,14 @@ void RegisterCoreComponents(Context* context)
 	RegisterIogramType<Curve_PolylineLoft>(context);
 	RegisterIogramType<Curve_PolylineEvaluate>(context);
 	RegisterIogramType<Curve_PolylineRevolve>(context);
+	RegisterIogramType<Curve_Pipe>(context);
 	RegisterIogramType<Curve_Polygon>(context);
 	RegisterIogramType<Curve_SketchPlane>(context);
 	RegisterIogramType<Curve_MeshSketch>(context);
 	RegisterIogramType<Curve_Rebuild>(context);
 	RegisterIogramType<Curve_Length>(context);
+	RegisterIogramType<Curve_SelfIntersections>(context);
+    RegisterIogramType<Curve_MakeKnot>(context);
 	//RegisterIogramType<Curve_ReadBagOfEdges>(context);
 	RegisterIogramType<Mesh_SubdivideMesh>(context);
 	RegisterIogramType<Input_SliderListener>(context);
@@ -521,6 +549,7 @@ void RegisterCoreComponents(Context* context)
 	RegisterIogramType<Vector_ColorRGBA>(context);
 	RegisterIogramType<Vector_ColorPalette>(context);
 	RegisterIogramType<Vector_BestFitPlane>(context);
+	RegisterIogramType<Vector_Grid3D>(context);
 	RegisterIogramType<Scene_UpdateListener>(context);
 	RegisterIogramType<Mesh_Offset>(context);
 	RegisterIogramType<Mesh_Window>(context);
@@ -535,6 +564,7 @@ void RegisterCoreComponents(Context* context)
 	RegisterIogramType<Mesh_JoinMeshes>(context);
 	RegisterIogramType<Mesh_TriMeshVolume>(context);
 	RegisterIogramType<Mesh_Tetrahedralize>(context);
+	RegisterIogramType<Mesh_TetLattice>(context);
 	RegisterIogramType<Mesh_UnifyNormals>(context);
 	RegisterIogramType<Mesh_AverageEdgeLength>(context);
 	RegisterIogramType<Mesh_CollapseShortEdges>(context);
@@ -562,6 +592,7 @@ void RegisterCoreComponents(Context* context)
 	RegisterIogramType<Mesh_ReadOBJ>(context);
 	RegisterIogramType<Mesh_ReadOFF>(context);
 	RegisterIogramType<Mesh_ReadPLY>(context);
+	RegisterIogramType<Mesh_ReadSTL>(context);
 	RegisterIogramType<Mesh_WriteOFF>(context);
 	RegisterIogramType<Mesh_WriteOBJ>(context);
 	RegisterIogramType<Mesh_WritePLY>(context);
@@ -569,6 +600,8 @@ void RegisterCoreComponents(Context* context)
 	RegisterIogramType<Mesh_SlideTowards>(context);
 	RegisterIogramType<Mesh_LinearDeformation>(context);
 	RegisterIogramType<Mesh_BoxMorph>(context);
+	RegisterIogramType<Mesh_MarchingCubes>(context);
+	RegisterIogramType<Mesh_Voxelize>(context);
 
 	//RegisterIogramType<Offsets_NgonMeshReader>(context);
 
@@ -581,4 +614,5 @@ void RegisterCoreComponents(Context* context)
 	RegisterIogramType<ShapeOp_GeometryStrain>(context);
 	RegisterIogramType<ShapeOp_MeshTriangleStrain>(context);
 	RegisterIogramType<ShapeOp_GenericConstraint>(context);
+	RegisterIogramType<ShapeOp_TetStrain>(context);
 }
